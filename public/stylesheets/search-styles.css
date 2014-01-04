@@ -1,0 +1,57 @@
+/* Non responsive */
+
+.container{
+  max-width: none !important;
+  width: 970px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.product-listing {
+    top:100px;
+}
+
+
+/* Logos & Icons
+================================= Save it for later use
+background: #E11000 url('../img/main-bg2.png') no-repeat 170px -180px; */
+
+.main-logo {
+        width: 124px;
+        height: 34px;
+        margin-left: -10px;
+        margin-top: 22px;
+        text-indent: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        background: url('../img/main-logo.png') no-repeat;
+        background-size: 100%;
+}
+
+.btn-danger {
+        margin-top: 70px;
+        margin-left: 0px;
+
+}
+
+.form-control {
+        margin-top: 45px;
+        width: 350px;
+}
+
+.btn-default {
+        margin-top: 45px;
+}
+
+.dropdown { 
+        margin-left: 150px;
+        margin-top: -58px;
+}
+
+/*nav
+=======================*/
+.navbar-header {
+        margin-left: 500px; 
+
+
+}

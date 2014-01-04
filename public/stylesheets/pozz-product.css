@@ -1,0 +1,168 @@
+/* The top div container that holds all the product listing */
+.product-listings {
+    width: 850px;
+    position:relative;
+    left: 100px;
+    top:40px;
+}
+/* div that holds each product listing */
+.product-container {
+    border-bottom:solid;
+    border-bottom-width:1px;
+    border-bottom-color: rgb(233,233,233);
+    width:100%;
+    height:190px;
+    padding:5px;
+}
+
+/* div that holds the media or product image */
+.product-media-container{
+    float:left;
+    padding:5px;
+    padding-top:19px;
+}
+
+/* The main product image */
+.product-image-main {
+    width:135px;
+    height:130px;
+}
+
+.modal-product-image-container {
+    width:500px;
+    height:700px;
+    float:left;
+}
+
+/*
+.product-media-options {
+    width:100%;  
+}
+*/
+
+/* Specify the size of the product image */
+.product-media {
+    width:180px;
+}
+
+/* the div that holds the price, map and profile image */
+.product-options-container {
+    float:left;
+    width:26%;
+    padding:5px;
+
+    text-align:center;
+}
+
+/* Specify the size of each product option */
+.product-option {
+    float:none;
+    width:50px;
+    height:50px;
+}
+
+.product-map-container {
+    padding-left:40px;
+    padding-right:30px;
+    height:50px;
+}
+.product-location-text {
+    font-size:13px;
+}
+
+
+/* Specify the look and feel of the posted time of the product */
+.product-posted-time {
+    padding-top:05px;
+    font-size:15px;
+    clear:both;
+}
+
+/* The div that holds product title and product description */
+.product-info-container {
+    padding-left:20px;
+    padding-right:10px;
+    float:left;
+    width:47%;
+}
+
+.product-price-container {
+/*    color: rgb(75,74,74);*/
+}
+
+.price-text {
+    color: rgb(153,0,0);
+    font-size:17px;
+    font-weight:750;
+}
+
+/* Specify the look and feel of the product title */
+.product-info-title {
+    padding-top:15px;
+    font-size:18;
+    font-weight:bold;
+}
+
+/* Specify the look and feel of product description */
+.product-info-description {
+    padding-top:10px;
+    word-wrap:break-word;
+    padding-bottom:10px;
+}
+
+/* This hides/reveals the overflow text in product description */
+/* Default to hide overflow text */
+.product-info-description-overflow {
+    display:none;
+}
+
+
+
+/* Specify the color of text in product listing */
+.product-text {
+    color: rgb(0,75,145);
+}
+
+
+.product-comment-userprofile {
+    float:left;
+}
+
+.product-comment-input {
+    float:left;
+    width:85%;
+    height:35px;
+    padding-left:10px;
+/*    padding-top:7px;*/
+
+}
+
+.map-icon {
+    width:25px;
+    height:25px;
+}
+
+.profile-image {
+    width:35px;
+    height:35px;
+    border-radius:5px;
+}
+
+
+
+
+
+.modal-product-detail-container {
+    float:left;
+    width:400px;
+    padding-top:40px;
+    padding:20px;
+}
+
+.modal-product {
+    width:1000px;
+}
+
+.modal-product-body {
+    height:600px;
+}

@@ -1,0 +1,232 @@
+.div-center {
+    width: 850px;
+    position:relative;
+    left: 100px;
+    top:40px;
+}
+
+.listing-image {
+    width:223px;
+/*    height:169px;*/
+/*    height: 100%;*/
+    float:left;
+}
+
+.listing-description {
+    width: 381px;
+/*    height:169px;*/
+    padding-top:2px;
+/*    float:left;*/
+    padding-left:16px;
+    float:left;
+}
+
+.listing-options {
+    width:174px;
+    padding-left:5px;
+/*    height: 152px;*/
+/*    height: 100%*/
+    float:right;
+}
+
+.listing {
+    height:220px;
+    padding-left:14px;
+    padding-top:14px;
+    overflow:hidden;
+    background-color: #f5f5f5;
+}
+
+.listing-expand {
+    height:400px;
+}
+
+.overflow-text {
+    display:none;
+}
+
+.overflow-placeholder {
+    content: "...";
+    width:5px;
+}
+
+.description-condition {
+    
+}
+
+.description-text {
+    word-wrap:break-word;
+}
+
+.product-overlay{
+    color: white;
+    font: 18px Arial, Helvetica, Sans-Serif;
+    letter-spacing: -1px;
+    background: rgb(0,0,0);
+    background: rgba(0,0,0,0.8);
+    padding:5px;
+}
+
+h2 {
+    position: absolute;
+    top:139px;
+    left:17px;
+}
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    content: "$100";
+/*
+    width: 20px;
+    height: 20px;
+*/
+    background-color: #000;
+    filter:alpha(opacity=50);
+    -moz-opacity:0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
+    z-index: 10000;
+}
+
+.product-image {
+/*
+    position:absolute;
+    left:0;
+*/
+    top:0;
+}
+
+.image-container {
+    height:173px;
+    width:227px;
+}
+
+.product-header {
+    font-size:20px;
+    font-weight:bold;
+    font-family:sans-serif;
+}
+
+.product-post-time {
+    float: right;
+}
+
+.option-button {
+
+    padding-left:10px;
+    padding-top:10px;
+/*    width:20px;*/
+}
+
+.option-button-setting {
+    width: 105px;
+}
+
+.map-button {
+    height: 50px;
+    width:50px;
+    background-image:url("img/googlemapicon.jpg");
+    background-color:transparent;
+}
+
+.map-direction-start {
+    float:left;
+    padding-left:10px;
+    padding-right:10px;
+}
+
+.modal-content.map-container {
+    width:800px;
+}
+
+.map-direction-input {
+    width:300px;
+}
+
+.map-direction-interchange {
+/*
+    width:30px;
+    height:30px;
+*/
+    float:left;
+}
+
+.map-direction-end {
+    float:left;
+    padding-left:10px;
+    padding-right:10px;
+}
+
+.map {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1040;
+    /*  display: none;*/
+      overflow: auto;
+      overflow-y: scroll;
+}
+
+.map-tool {
+    float:left;
+    width: 750;
+    height:50;
+    padding-top:20;
+}
+
+.option {  
+    float:left;
+/*    height:100px;*/
+    padding-top:11px;
+    padding-left:110px;
+}
+
+.wishbutton {
+    padding-left:5px;
+/*    width:10px;*/
+}
+
+.map-direction-container{
+    height:30;
+    padding-left:200px;
+}
+
+.map-direction-option
+{
+    float:left;
+    padding-right:50px;
+}
+
+#map-canvas {
+    float:left;
+    width:450px;
+    height:400px;
+}
+
+#directions-panel {
+    float:left;
+    width:300px;
+    height:400px;
+    overflow:auto;
+}
+
+.map-calculate-button {
+    float:left;
+    width:30px;
+}
+
+.map-container {
+    width:100%;
+    height:700px;
+    overflow-y:hidden;
+}
+
+
+
+.map-footer {
+    padding-top:30px;
+}
