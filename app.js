@@ -17,8 +17,8 @@ var query_result = null;
 var connection = mysql.createConnection({
     host:"localhost",
     user:"root",
-    password:"pozzerteam2win",
-    database:'pozz_test'
+    password:"",
+    database:''
 });
 
 var app = express();
