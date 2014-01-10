@@ -5,8 +5,8 @@
     left: 100px;
     top:40px;
 }
-/* div that holds each product listing */
-.product-container {
+/* div container for a listing */
+.listing {
     border-bottom:solid;
     border-bottom-width:1px;
     border-bottom-color: rgb(233,233,233);
@@ -165,4 +165,8 @@
 
 .modal-product-body {
     height:600px;
+}
+
+.new-formcontrol {
+    width:400px;
 }

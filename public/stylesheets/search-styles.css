@@ -24,7 +24,7 @@ background: #E11000 url('../img/main-bg2.png') no-repeat 170px -180px; */
         text-indent: 100%;
         white-space: nowrap;
         overflow: hidden;
-        background: url('../img/main-logo.png') no-repeat;
+        background: url('../images/main-logo.png') no-repeat;
         background-size: 100%;
 }
 

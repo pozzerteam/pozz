@@ -3,49 +3,122 @@
 <head>
     <!---   AIzaSyC-RWs2BNTpLsQSlkgysaVkDKeJDhQhufw -->
     <title>Pozz Search Listing Testing</title>
-    <script src="/javascripts/jquery.js"></script>
-    <script src="/javascripts/jquery.ui.effect.js"></script>
-    <script language="javascript" type="text/javascript" src="/javascripts/bootstrap.js"></script>
-    <script src="/javascripts/transition.js"></script>
-    <script src="/javascripts/modal.js"></script>
-    <script src="/javascripts/utility.js"></script>
-    <script src="/javascripts/expandable.js"></script>
-    <script src="/javascripts/processing.js"></script>
+    <script src="javascripts/jquery.js"></script>
+    <script src="javascripts/jquery.ui.effect.js"></script>
+    <script language="javascript" type="text/javascript" src="javascripts/bootstrap.js">              </script>
+    <script src="javascripts/transition.js"></script>
+    <script src="javascripts/modal.js"></script>
+    <script src="javascripts/utility.js"></script>
+    <script src="javascripts/expandable.js"></script>
+    <script src="javascripts/processing.js"></script>
+    <script src="javascripts/tooltip.js"></script>
+<!--
+    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js"></script>
+    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/enc-base64-min.js">            </script>
+-->
 <!--
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-RWs2BNTpLsQSlkgysaVkDKeJDhQhufw&sensor=false">
     </script>
 -->
-    <script type="text/javascript" src="/javascripts/map.js"></script>
-    <link rel="stylesheet" href="/stylesheets/bootstrap-theme.css">
-    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
-    <link rel="stylesheet" href="/stylesheets/pozz-product.css">
-    <link rel="stylesheet" href="/stylesheets/search.css">
-    <link rel="stylesheet" href="/stylesheets/preview-product.css">
-    <link rel="stylesheet" href="/stylesheets/search-styles.css">
+    <script type="text/javascript" src="javascripts/map.js"></script>
+    <link rel="stylesheet" href="stylesheets/bootstrap-theme.css">
+    <link rel="stylesheet" href="stylesheets/bootstrap.css">
+
+    <link rel="stylesheet" href="stylesheets/pozz-product.css">
+    <link rel="stylesheet" href="stylesheets/search.css">
+    <link rel="stylesheet" href="stylesheets/preview-product.css">
+<!--    <link rel="stylesheet" href="../public/stylesheets/search-styles.css">-->
+    
+    <script>
+
+    </script>
+
     <script>
         $(document).ready(function() {
-            
             var post_title_id = "post-title";
             var post_price_id = "post-price";
             var post_description_id = "post-description";
             var post_location_id = "post-location";
             var post_days_id = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
             var isClicked = false;
+            var btnSignIn = $('#sign-btn');
+            
+            //Selectors for full view
+            var fv_title = $('#fv_title');
+            var fv_price = $('#fv_price');
+            var fv_times = $('#fv_times');
+            var fv_description = $('#fv_description');
+            
+            
+            /*
+                Display a tooltip for the sign in button on nav bar
+            */
+            btnSignIn.tooltip({
+                'trigger':'click',
+                'placement': 'bottom',
+                'title': $('#signinform').html(),
+                'html': true,
+            });
+            
+            $('#successsignin').hide();
+            
+            //Sign in button, located on nav bar
+            btnSignIn.on('shown.bs.tooltip', function(){
+                $('#signinbutton').click(function(){
+                    var user_auth = {};
+                    user_auth.username = $('#username').val();
+                    user_auth.password = $('#password').val();
+                    $.ajax({
+                        type:"POST",
+                        data:JSON.stringify(user_auth),
+                        contentType:"application/json",
+                        url: "http://localhost:3000/login",
+                        async:false,
+                        success: function(data) {
+                            btnSignIn.tooltip("hide");
+                            btnSignIn.hide();
+                            $('#successsignin').show();
+                            $('#signinname').html("pozzerteam");
+                        },
+                        error: function(data){
+                            console.log(data);
+                            console.log("failed");
+                        }
+                    });
+                });    
+            });
+            
+            
             
             /* Verify forms */
             $('#post-submit').click(function(){
-                var title = $('#' + post_title_id).val();
-                var price = $('#' + post_price_id).val();
-                var description = $('#' + post_description_id).val();
-                var location = $('#' + post_location_id).val();
-                var days = "";
+                var myTitle = $('#' + post_title_id).val();
+                var myPrice = $('#' + post_price_id).val();
+                var myDescription = $('#' + post_description_id).val();
+                var myLocation = $('#' + post_location_id).val();
+                var myDays = "";
                 for(var i = 0; i < post_days_id.length; i++) {
                     if($('#post-' + post_days_id[i]).is(":checked")) {
-                        days += post_days_id[i] + ",";
+                        myDays += post_days_id[i] + ",";
                     }
                 }
-                alert(days);
+                
+                var data = {};
+                data.id = CryptoJS.SHA1(myTitle).toString(CryptoJS.enc.Hex);
+                data.title = myTitle;
+                data.price = myPrice;
+                data.description = myDescription;
+                data.days = myDays;
+                $.ajax({
+                    type:"POST",
+                    data:JSON.stringify(data),
+                    contentType:"application/json",
+                    url:"http://localhost:3000/createpost",
+                    success: function(data) {
+                        console.log("successfully submitted the post");
+                    }
+                });
                 
             });
             
@@ -78,10 +151,10 @@
                    var fullview_price = $('#price-' + id).html();
                    var fullview_availabletimes = $('#available_times-' + id).html();
                    var fullview_description = $('#text-' + id).html();
-                   $('#fv_title').html(fullview_title);
-                   $('#fv_price').html(fullview_price);
-                   $('#fv_times').html(fullview_availabletimes);
-                   $('#fv_description').html(fullview_description);
+                   fv_title.html(fullview_title);
+                   fv_price.html(fullview_price);
+                   fv_times.html(fullview_availabletimes);
+                   fv_description.html(fullview_description);
                });
                
            }); 
@@ -91,62 +164,51 @@
         });
         /** JQuery functions **/
     </script>
+<base href="/public/">
 </head>
 <body>
-<!--<div class="product-listings">-->
+      <nav class="navbar navbar-default" role="navigation">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Pozz</a>
+      </div>
     
-    <!-- Fixed navbar -->
-<!--        <div class="navbar navbar-default navbar-fixed-top" role="navigation">-->
-    <div class="navbar navbar-default" role="navigation">
-          <div class="container">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">LInk</a></li>
+          <li><a href="#">Link</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Separated link</a></li>
+              <li class="divider"></li>
+              <li><a href="#">One more separated link</a></li>
+            </ul>
+          </li>
+        </ul>
+        <form class="navbar-form navbar-left" role="search">
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="e.g. Macbook Air" style="width:500px;">
+          </div>
+          <button type="submit" class="btn btn-default">Search</button>
+        </form>
+        <p class="navbar-text navbar-right" id="successsignin"><a href="#" class="navbar-link" id="signinname"></a></p>
+        <button type="button" class="btn btn-default navbar-btn" id=
+"sign-btn">Sign In/Up</button>
+      </div><!-- /.navbar-collapse -->
+    </nav>
 
-            <div class="navbar-header">
-
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-                        <form class="navbar-form navbar-left" role="search">
-                          <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search">
-                          </div>
-                          <button type="submit" class="btn btn-default">Submit</button>
-                        </form>
-
-              <a class="main-logo pull-right" href="#">Pozz</a>
-            </div>
-
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-
-
-                    <a class="btn btn-danger" href="#" id="post-button">Pozz it</a>
-
-                    <li class="dropdown pull-left">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                          <ul class="dropdown-menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li class="divider"></li>
-                            <li class="dropdown-header">Nav header</li>
-                            <li><a href="#">Separated link</a></li>
-                            <li><a href="#">One more separated link</a></li>
-                          </ul>
-                    </li>
-                </ul>
-
-            </div><!--/.nav-collapse -->
-       </div><!--/.container -->
-    </div><!--/.navbar navbar-default navbar-fixed-top-->
-
-    <div class="main-container">
-        
-        
         <div class="category-container">
             <div class="category category-header-title">Category</div>
             <div class="category category-text"><a>Electronics</a></div>
@@ -156,64 +218,47 @@
             <div class="category category-text"><a>Free Stuff</a></div>
         </div>
         
-        <!-----------  Listing Container ------------->
-        <div class="search-listing-container">
+        <div class="listing-container">
             {% for post in result %}
-            <!------------- Start product listing ---------------->
-            <div class="product-container" id="{{ post.pid }}">
+            <div class="listing" id="{{ post.pid }}">
                 <div class="">
-                    <!-- Start image container -->
                     <div class="product-media-container">
-                        <div class="product-media"><img src="/images/product1.jpg" class="product-image-main" id="image-1389"></div>
+                        <div class="product-media"><img src="images/product1.jpg" class="product-image-main" id="image-1389"></div>
                         <em>About an hour ago</em><br>
                     </div>
-                    <!-- End image container -->
                     
-                    <!-- Start product information ----->
                     <div class="product-info-container" id="description-1389">
-                        <!-- product title -->
                         <div class="product-info-title product-text" id="title-1389">
                             {{ post.post_title }}
                         </div>
                         <div id="price-1389" class="product-price-container price-text">Used: ${{ post.post_price }}</div>
                         <div id="available_times-1389">Available times: <a>Monday</a> <a>Thursday</a> <a>Friday</a></div>
-                        <div>Place: <img src="/images/mapicon2.jpeg" class="map-icon"><a>Seattle, WA</a></div>
+                        <div>Place: <img src="images/mapicon2.jpeg" class="map-icon"><a>Seattle, WA</a></div>
 
-                        <!-- Product description with overflow text -->
                         <div class="product-info-description" id="text-1389">The New York Times Bestseller on the continuous innovation to create radically successfull business.  I've read this book 5 times and learned a lot throughout my career as a serial  <span class="product-text" id="overflow-placeholder-1389">...</span> <span class="product-info-description-overflow" id="overflow-1389"> entrepreneur.  Want to sell it to those who wants to risk it to change the world.
                             </span>                
                         </div> 
                     </div>
-                  <!-- End product information -->
-                    
-                    
-                  <!---------------------Start Map and Profile ------------->
                     <div class="product-options-container">
                     </div>
                 </div>
             </div>
             {% endfor %}
-            <!----------- End Product Listing ----------------->
-
-                    
-
 
         </div>
-        
-        <!--------- Chat Bar ----------------->
+
         <div class="chat-bar-container">chat bar</div>
     </div>
 
-    <!------------ start product modal ----------------->
+
+<!--
 <div class="modal fade map-container" id="productModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <!----- modal-product controls the width of the entire dialog box ----------->
     <div class="modal-dialog modal-product">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="myModalLabel">Product detail</h4>
             </div>
-            <!----------- modal-product-body controls height of the body ----------->
             <div class="modal-body modal-product-body">
                 <div class="modal-product-image-container">
                     <div class="modal-product-main-productimage">
@@ -221,21 +266,20 @@
     height:550px;">
                     </div>
                     <div class="">
-                        <img src="/images/product1.jpg" class="modal-product-subimage" style="width:50px; height:50px;">
-                        <img src="/images/product1-sub1.jpg" class="modal-product-subimage" style="width:50px; height:50px;">
+                        <img src="images/product1.jpg" class="modal-product-subimage" style="width:50px; height:50px;">
+                        <img src="images/product1-sub1.jpg" class="modal-product-subimage" style="width:50px; height:50px;">
                     </div>
                     
                 </div>
                 <div class="modal-product-detail-container">
-                    <!-- product title -->
                         <div class="product-info-title product-text" id="fv_title">
                         </div>
                         <div class="product-price-container price-text" id="fv_price"></div>
                         <div id="fv_times"></div>
 
-                        <!-- Product description with overflow text -->
+
                         <div class="product-info-description" id="text-1389">
-                            <img src="/images/profile1.jpg" style="float:left; padding-right:10px;">
+                            <img src="images/profile1.jpg" style="float:left; padding-right:10px;">
                             <div id="fv_description"></div>              
                         </div> 
                 </div>
@@ -243,16 +287,13 @@
             </div>
             <div class="modal-footer map-footer">
                 <button type="button" class="btn btn-default" id="map-close">Close</button>
-<!--                <button type="button" class="btn btn-primary">Save changes</button>-->
             </div>
         </div>
     </div>
 </div>
-    <!------------- End product modal --------------->
-    
-    
-    <!--------------- Start Google Map Overlay ------------------->
-<!-- Modal -->
+-->
+
+<!--
 <div class="modal fade map-container" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog map-dialog-box">
             <div class="modal-content">
@@ -276,8 +317,8 @@
                     <div class="map-direction-start">
                             <input class="form-control map-direction-input" type="text" placeholder="Starting address" id="map-start-address">
                     </div>
-<!--                   <input type="button" class="map-direction-interchange glyphicon glyphicon-refresh" id="map-interchange-button" onclick="addressSwap()">-->
-                    <button class="btn btn-default map-direction-interchange glyphicon glyphicon-refresh" type="button" id="map-interchange-button" onclick="addressSwap()"></button>
+                   <input type="button" class="map-direction-interchange glyphicon glyphicon-refresh" id="map-interchange-button" onclick="addressSwap()">
+                    <button class="btn btn-default map-direction-interchange" type="button" id="map-interchange-button" onclick="addressSwap()"></button>
                     <div class="map-direction-end">
                             <input class=" form-control map-direction-input" type="text" placeholder="Destination address" id="map-end-address">
                     </div>
@@ -288,24 +329,25 @@
               </div>
               <div class="modal-footer map-footer">
                 <button type="button" class="btn btn-default" id="map-close">Close</button>
-<!--                <button type="button" class="btn btn-primary">Save changes</button>-->
               </div>
             </div>
           </div>
     </div>
-<!--</div>-->
-<!-- /.modal -->
-    <!--------------- End Google Map Overlay ------------------->
+-->
+
+    
+
+<!--
 <div class="container">
     <div class="post-container">
         <div style="float:left;">
-            <div style="padding:10px;">Title <br><input type="text" placeholder="Title" style="width:250px;" id="post-title"></div>
+            <div style="padding:10px;">Title <br><input type="text" placeholder="Title" style="width:250px;" id="post-title" value="The Lean Startup By Eric Ries"></div>
             <div style="padding:10px;">Price <br><input type="text" placeholder="Price" style="width:250px;" id="post-price"></div>
-            <div style="padding:10px;">Description<br><input type="text" placeholder="Description" style="width:250px; height:125px;" id="post-description"></div>
+            <div style="padding:10px;">Description<br><input type="text" placeholder="Description" style="width:250px; height:125px;" id="post-description" value="I'm seeling this superb book on how to start a startup"></div>
         </div>
         <div style="float:left;">
             <div style="padding:10px;">
-                Location <br> <input type="text" placeholder="Location" style="width:250px;" id="post-location">
+                Location <br> <input type="text" placeholder="Location" style="width:250px;" id="post-location" value="Seattle, WA">
             </div>
             <div style="padding:10px;">
                 Available Times<br>
@@ -313,7 +355,7 @@
             </div>
             <div style="padding:10px;">
                 Upload image
-                <input type="file">
+                <input type="file" multiple="" id="post-image">
             </div>
             <div style="padding:20px;">
                 <input type="button" value="Submit" id="post-submit">
@@ -321,5 +363,18 @@
         </div>
     </div>
 </div>
+-->
+    <div class="tooltip" id="signinform">
+        <div class="tooltip-inner">
+            <h4>Please Sign in</h4> <br>
+            Username:<input type="text" placeholder="Username" id="username" value="pozzerteam"><br>
+            Password:<input type="password" placeholder="Password" id="password" value="pozzerteam2win"><br>
+            <input type="button" value="Sign in" id="signinbutton"> <br>
+            A new user? <a href="#" >Sign Up</a>
+        </div>
+        <div class="tooltip-arrow">
+        </div>
+    </div>
+    
 </body>
 </html>
