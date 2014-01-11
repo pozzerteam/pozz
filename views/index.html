@@ -1,11 +1,166 @@
-{% extends 'layout.html' %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pozz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="stylesheets/bootstrap.css" rel="stylesheet">
+    <link href="stylesheets/index-styles.css" rel="stylesheet" media="screen">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body>
 
-{% block title %} My Page {% endblock %}
 
-{% block head %}
-  {% parent %}
-{% endblock %}
+    <!--Navbar -->
+    <div class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <a class="main-logo pull-left" href="#">Pozz</a>
+        <p class="navbar-text pull-right">Sign In</p>
+      </div>
+    </div>
+    <!-- End navbar -->
 
-{% block content %}
-<p>This is just an awesome page.</p>
-{% endblock %}
+
+    <!-- Jumbotron -->
+    <div class="jumbotron">
+      <div class="container">
+          <div>
+            <h1>A place where you could buy and sell with an ease of mind</h1>
+              <p class="main-button">
+                <div class="container">
+                  <form class="form-inline" role="form">
+                    <div class="form-group">
+                      <label class="sr-only" for="exampleInputEmail2">Email address</label>
+                      <input type="email" class="form-control" id="exampleInputEmail2" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                      <label class="sr-only" for="exampleInputPassword2">Password</label>
+                      <input type="password" class="form-control" id="exampleInputPassword2" placeholder="Password">
+                    </div>
+                      <a href="signupform" class="btn btn-danger">Sign Up</a>
+<!--                    <button type="submit" class="btn btn-danger">Sign Up</button>-->
+                </form>
+                <p class="signup">By creating an account, I accept Pozz's Terms of Service and Privacy Policy.</p>
+              </div>
+              </p>
+          </div>
+      </div>
+    </div>
+    <div class="jumbotron2">
+      <div class="container">
+      </div>
+    </div>
+
+    <!-- End Jumbotron -->
+
+    <!-- Main Content -->
+    <div class="container">
+
+      <div class="row ft">
+        <div class="col-sm-6 hidden-xs">
+          <div class="ft-icon camera img-rounded"></div>
+        </div>
+        <div class="col-sm-6 ft-copy">
+          <h2>Keep notified</h2>
+          <p>
+            A heart that's full up like a landfillA job that slowly kills you Bruises that won't heal, You look so tired and unhappy Bring down the government They don't, they don't speak for us I'll take a quiet life A handshake of carbon monoxide
+
+          </p>
+        </div>
+      </div>
+      <hr>
+      <br>
+      <br>
+      <div class="row ft">
+        <div class="col-sm-6 ft-copy">
+          <h2>Make deal right away</h2>
+          <p>
+            You look so tired and unhappy Bring down the government They don't, they don't speak for us I'll take a quiet life A handshake of carbon monoxide 
+          </p>
+        </div>
+        <div class="col-sm-6 hidden-xs">
+          <div class="ft-icon friends img-rounded"></div>
+        </div>
+      </div>
+      <hr>
+      <br>
+      <br>
+      <div class="row ft">
+        <div class="col-sm-6 hidden-xs">
+          <div class="ft-icon cloud img-rounded"></div>
+        </div>
+        <div class="col-sm-6 ft-copy">
+          <h2>Promote your items</h2>
+          <p>
+            No alarms and no surprises No alarms and no surprises No alarms and no surprises Silent, silent This is my final fit, my final bellyache with No alarms and no surprises
+            No alarms and no surprises. 
+          </p>
+        </div>
+      </div>
+      <hr>
+      <br>
+      <br>
+      <div class="row ft">
+        <div class="col-sm-6 ft-copy">
+          <h2>Prevent fraud activity</h2>
+          <p>
+            You look so tired and unhappy Bring down the government They don't, they don't speak for us I'll take a quiet life A handshake of carbon monoxide 
+          </p>
+        </div>
+        <div class="col-sm-6 hidden-xs">
+          <div class="ft-icon friends img-rounded"></div>
+        </div>
+      </div>
+
+     <div class="callout"> 
+        <a class="btn btn-danger btn-lg">
+          Sign up for Pozz<span class="glyphicon glyphicon-arrow-right"></span>
+        </a>
+      </div>
+
+            <!-- Footer -->
+
+      <footer class="main-footer">
+        <div class="row">
+          <div class="col-sm-4">
+            <p>
+              Our mission is to create the best maraket place on earth.
+            </p>
+            <p class="copyright">&copy; 2013 Pozz, Inc.</p>
+          </div>
+          <div class="col-sm-2 col-sm-offset-1 col-md-offset-2">
+            <ul class="link-list">
+              <li class="heading"><a href="#"> About Pozz</a></li>
+              <li><a href="#">Team</a></li>
+              <li><a href="#">Pozz Blog</a></li>
+              <li><a href="#">Pozz Shop</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms &amp; Conditions</a></li>
+            </ul>            
+          </div>
+          <div class="col-sm-2">
+            <ul class="link-list">
+              <li class="heading"><a href="#">Introduction &rarr;</a></li>
+              <li><a href="#">Selling on Pozz</a></li>
+              <li><a href="#">Buying on Pozz</a></li>
+            </ul>
+          </div>
+          <div class="col-sm-2">
+            <ul class="link-list">
+              <li class="heading"><a href="#">Get in touch &rarr;</a></li>
+              <li><a href="pozzteam@pozz.com">pozzteam@pozz.com</a></li>
+              <li>1(360)6103008</li>
+            </ul>
+          </div>
+        </div>
+      </footer> 
+      <!-- End footer -->
+    </div><!-- End Main Content -->
+
+
+  </body>
+</html>

@@ -74,7 +74,7 @@
                         data:JSON.stringify(user_auth),
                         contentType:"application/json",
                         url: "http://localhost:3000/login",
-                        async:false,
+                        async:true,
                         success: function(data) {
                             btnSignIn.tooltip("hide");
                             btnSignIn.hide();

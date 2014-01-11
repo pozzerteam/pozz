@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+  <!DOCTYPE html>
+<html>
+  <head>
+    <title>Pozz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="stylesheets/bootstrap.css" rel="stylesheet">
+    <link href="stylesheets/signup-styles.css" rel="stylesheet" media="screen">
+    <script src="javascripts/jquery.js"></script>
+    <script src="javascripts/tooltip.js"></script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+
+
+    <!--Navbar -->
+    <div class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <a class="main-logo pull-left" href="#">Pozz</a>
+        <p class="navbar-text pull-right">Sign In</p>
+      </div>
+    </div>
+    <!-- End navbar -->
+
+<!-- Sign Up form -->
+    <script>
+        var path = "images/";
+        var validImg = path + "valid.png";
+        var invalidImg = path + "invalid.png";
+        var userVerified = false;
+        var emailVerified = false;
+        var passwordVerified = false;
+        var termsVerified = false;
+        
+        
+        $(document).ready(function(){
+            //Make sure the email is the same
+//            $('#verifyemail').keyup(function(){
+//                if ($(this).val() != $("#signupemail").val()) {
+//                    $('#emaildoublecheck').attr('src', invalidImg);
+//                    $('#emailcheckstatus').html("is not the same");
+//                    emailVerified = false;
+//                } else {
+//                    $('#emaildoublecheck').attr('src', validImg);
+//                    $('#emailcheckstatus').html("is the same");
+//                    emailVerified = true;
+//                }
+//            });
+            
+            $('#signupemail').keyup(function() {
+                //Check both valid email and duplicate in system
+                $.ajax({
+                    type:"POST",
+                    url:"http://localhost:3000/veriemail",
+                    async:false,
+                    data:"email=" + $(this).val(),
+                    complete:function(data) {
+                        if(data.responseJSON.verify === "valid") {
+                            $('#emailvalidation').attr("src", validImg);
+                            $('#emailstatus').html(data.responseJSON.statusText);
+                            emailVerified = true;
+                        } 
+                        if(data.responseJSON.verify === "invalid") {
+                            $('#emailvalidation').attr("src", invalidImg);
+                            $('#emailstatus').html(data.responseJSON.statusText);
+                            emailVerified = false;
+                        }
+                    }
+                    
+                });
+            })
+            
+            
+            $('#signupuser').keyup(function(){
+                if($(this).val().length > 3) {
+                   $.ajax({
+                        type:"POST",
+                        url: "http://localhost:3000/veriuser",
+                        async:false,
+                        data:"username=" + $(this).val(),
+                        complete:function(data) {
+                            if(data.responseJSON.verify === "valid") {
+                                $('#usernamevalidation').attr("src", validImg);
+                                $('#usernamestatus').html(data.responseJSON.statusText);
+                                userVerified = true;
+                            }
+                            if(data.responseJSON.verify === "invalid") {
+                                $('#usernamevalidation').attr("src", invalidImg);
+                                $('#usernamestatus').html(data.responseJSON.statusText);
+                                userVerified = false;
+                            }
+                        }
+                   });
+                }
+            });
+            
+            
+            $('#signuppassword').keyup(function(){
+               passwordVerified = true; 
+            });
+            
+            $('#signupbutton').click(function(){
+                if (userVerified && emailVerified && passwordVerified) {
+                    var myData  = {};
+                    myData.username = $('#signupuser').val();
+                    myData.password = $('#signuppassword').val();
+                    myData.email = $('#signupemail').val();
+                }
+  
+            });
+            
+            
+            $('#termscondition').change(function(){
+                if($(this).is(":checked")){
+                    termsVerified = true;
+                } else {
+                    termsVerified = false;
+                }
+            });
+        });
+        
+        /* Validate if every field is filled */
+        function validateForm()
+        {
+            if (userVerified && emailVerified && passwordVerified && termsVerified) {
+                var myData  = {};
+                myData.username = $('#signupuser').val();
+                myData.password = $('#signuppassword').val();
+                myData.email = $('#signupemail').val();
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+    </script>
+
+    <div class="container">
+
+      <form class="form-signin" role="form" action="signup" method="post" onsubmit="return validateForm()">
+        <h2 class="form-signin-heading">Please sign Up</h2>
+        <input type="text" class="form-control" placeholder="Username" id="signupuser" name="username" required autofocus><img src="" id="usernamevalidation"><font id="usernamestatus"></font> <br><br>
+        <input type="text" class="form-control" placeholder="Email address" id="signupemail" name="email" required> <img src="" id="emailvalidation"><font id="emailstatus"></font>
+<br><br>
+<!--
+        <input type="text" class="form-control" placeholder="Verify Email address" id="verifyemail" name="email" required> <img src="" id="emaildoublecheck"><font id="emailcheckstatus"></font>
+<br><br>
+-->
+        <input type="password" class="form-control" placeholder="Password" id="signuppassword" name="password" required>
+        <label class="checkbox">
+          <input type="checkbox" value="remember-me" id="termscondition" required><a href="#">Terms and Conditions</a>
+        </label>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" id="signupbutton">Sign Up</button>
+      </form>
+
+    </div> <!-- /container -->
+
+
+<!-- Sign Up form -->
+
+
+
+            <!-- Footer -->
+      <hr>
+      <footer class="main-footer">
+        <div class="container">
+        <div class="row">
+          <div class="col-sm-4">
+            <p>
+              Our mission is to create the best maraket place on earth.
+            </p>
+            <p class="copyright">&copy; 2013 Pozz, Inc.</p>
+          </div>
+          <div class="col-sm-2 col-sm-offset-1 col-md-offset-2">
+            <ul class="link-list">
+              <li class="heading"><a href="#"> About Pozz</a></li>
+              <li><a href="#">Team</a></li>
+              <li><a href="#">Pozz Blog</a></li>
+              <li><a href="#">Pozz Shop</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms &amp; Conditions</a></li>
+            </ul>            
+          </div>
+          <div class="col-sm-2">
+            <ul class="link-list">
+              <li class="heading"><a href="#">Introduction &rarr;</a></li>
+              <li><a href="#">Selling on Pozz</a></li>
+              <li><a href="#">Buying on Pozz</a></li>
+            </ul>
+          </div>
+          <div class="col-sm-2">
+            <ul class="link-list">
+              <li class="heading"><a href="#">Get in touch &rarr;</a></li>
+              <li><a href="pozzteam@pozz.com">pozzteam@pozz.com</a></li>
+              <li>1(360)6103008</li>
+            </ul>
+          </div>
+        </div>
+        </div>
+      </footer> 
+      <!-- End footer -->
+    </div><!-- End Main Content -->
+
+
+  </body>
+</html>    

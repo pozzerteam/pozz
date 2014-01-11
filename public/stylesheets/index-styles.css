@@ -1,0 +1,275 @@
+
+/* Typography
+================================= */
+
+
+h1 {
+	font-weight: 200;
+	margin-bottom: 30px;
+}
+h2, h3 {
+	font-size: 1.25em;
+	color: #5f5d60;
+	margin-bottom: 16px;
+	margin-top: 0;
+}
+p {
+	color: #b3aeb5;
+	line-height: 1.7;
+	font-size: 1.1em;
+	font-weight: 200;
+}
+strong {
+	color: #5f5d60;
+}
+.navbar-text {
+	font-weight: bold;
+	margin-right: 0%;
+}
+.lead {
+	color: #d5c1f2;
+	margin-bottom: 70px;
+}
+.lead:nth-of-type(2) {
+	font-size: initial;
+	margin-bottom: 20px;
+}
+
+
+/* Layout
+================================= */
+
+.container {
+	max-width: 1000px;
+}
+
+.ft {
+	margin-bottom: 72px;
+}
+.ft-copy {
+	padding-top: 32px;
+}
+
+.callout {
+	padding: 35px 0;
+	margin-top: 64px;
+	text-align: center;
+	border: 1px solid #e3e3e3;
+	border-right: none;
+	border-left: none;
+}
+
+.callout .glyphicon {
+	margin-left: 10px;
+}
+
+.main-footer {
+	margin: 100px 0 80px 0;
+}
+
+
+
+/* Sign Up
+======================*/
+.form-inline .form-group {
+	margin-left: 5px;
+}
+
+.form-inline .btn {
+	margin-left: 5px;
+}
+
+.signup {
+	margin-top: 5px;
+	font-size: 12px;
+	text-align: center;
+}
+
+/* Buttons
+================================= */
+
+
+.btn-default {
+	border-width: 2px;
+	border-color: inherit;
+	margin-right: 10px;
+	padding: 12px 22px;
+}
+.btn-default:hover {
+	background-color: #fff;
+	color: #957bba;
+	border-color: #fff;
+}
+
+
+/* Jumbotron
+================================= */
+
+.jumbotron {
+	padding: 150px 0 0px 0;
+	text-align: center
+}
+
+.jumbotron2 {
+	background-image: url('../images/main-bg3.png');
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	padding: 415px 0 50px 0;
+	margin-bottom: 100px;
+}
+
+.main-button {
+	padding-top: 2px;
+}
+
+.hr {
+	padding: 0px 0px 0px 0px;
+}
+
+
+
+/* Logos & Icons
+================================= Save it for later use
+background: #E11000 url('../img/main-bg2.png') no-repeat 170px -180px; */
+
+.main-logo {
+	width: 124px;
+	height: 34px;
+	margin-left: 42.8%;
+	margin-top: 22px;
+	text-indent: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	background: url('../images/main-logo.png') no-repeat;
+	background-size: 100%;
+}
+.ft-icon {
+	width: 94%;
+	height: 196px;
+	position: relative;
+	background: lightgray;
+	background-size: 140%;
+}
+.ft-icon::before {
+	content: "";
+	display: block;
+	position: absolute;
+	width: 164px;
+	height: 102px;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	margin: auto;
+	background: url('../images/feature-icons.png') no-repeat;
+	background-size: 100%;
+}
+.friends::before {
+	background-position: 0 -105px;
+}
+.cloud::before {
+	background-position: 0 -210px;
+}
+.ft-icon.friends {
+	background-position: -500px 0;
+}
+.ft-icon.cloud {
+	background-position: 260px 0;
+}
+
+/* Media Queries
+================================= */
+
+@media (max-width: 991px) {
+	.jumbotron {
+		padding-top: 120px;
+		padding-bottom: 20px;
+		background-position: 10% 10%;
+	}
+	.ft-copy {
+		padding-top: 12px;
+	}
+	.ft-copy p {
+		width: auto;
+	}
+}
+
+
+@media (max-width: 767px) {
+	.navbar {
+		min-height: 60px;
+	}
+	.main-logo {
+		width: 100px;
+		margin-top: 20px;
+
+	}
+	.navbar-text {
+		font-size: 13px;
+		margin-top: 27px;
+
+	}
+
+	.jumbotron {
+		padding-top: 80px;
+		margin-bottom: 32px;
+	}
+	.jumbotron2 {
+		width: 100%; 
+		height: auto;
+	}
+
+	.lead {
+		margin-bottom: 40px;
+	}
+	.ft {
+		margin-bottom: 16px;
+	}
+	.callout {
+		margin-top: 32px;
+	}	
+}
+
+@media (max-width: 580px) {
+		.main-logo {
+		width: 90px;
+		margin-top: 20px;
+	}
+	.navbar-text {
+		font-size: 12px;
+		margin-top: 27px;
+	}
+
+}
+
+
+
+@media (max-width: 480px) {
+	.main-logo {
+		width: 82px;
+		margin-top: 20px;
+		margin-left:40%;
+	}	
+	}
+
+
+@media (max-width: 380px) {
+	.jumbotron2 {
+		display: none;		
+	}
+	.main-logo {
+		width: 82px;
+		margin-top: 20px;
+		margin-left:34%;
+	}	
+	.navbar-text {
+		font-size: 12px;
+		margin-top: 25px;
+	}
+
+	}
+
+
+
+
+
