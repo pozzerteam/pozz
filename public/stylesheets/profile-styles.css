@@ -1,0 +1,76 @@
+/* container
+=================*/
+
+.container {
+  max-width: none !important;
+  width: 970px;
+}
+
+
+
+/* nav
+==============*/
+.navbar {
+    height: 100px;
+    background-color: white;
+}
+
+.navbar .navbar-text {
+    margin-top:30px;
+}
+
+.main-logo {
+	width: 124px;
+	height: 34px;
+	margin-left: -10px;
+	margin-top: 22px;
+	text-indent: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	background: url('../images/main-logo.png') no-repeat;
+	background-size: 100%;
+}
+
+
+/* form
+===============*/
+.form-inline {
+    padding-top: 100px;
+    padding-bottom: 100px;
+    padding-left: 50px;
+    padding-right: 50px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 100px;
+    border-left:1px solid lightgray;
+    border-right:1px solid lightgray;
+    margin: auto;
+
+}
+.imgcontainer {
+    width: 70px;
+    height: 70px;
+    
+}
+
+.imgcontainer img{
+    width: 100%;
+    height: auto;    
+}
+
+.form-group .file {
+
+}
+
+.form-group .form-control {
+    float: right;
+    
+}
+
+.paragraph {
+    font-weight:bold; 
+
+}
+
+
