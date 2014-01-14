@@ -126,7 +126,8 @@ app.post('/login', function(req, res) {
 
 /* When user has successfully filled out the information */
 app.post('/signup', function(req, res){
-    var myParam = [createUID(), req.body.username, req.body.password, req.body.email, getDate()];
+    var uid = createUID();
+    var myParam = [uid, req.body.username, req.body.password, req.body.email, getDate()];
     var sql_stm = {
         tbname: "users",
         params:["uid", "username", "password", "email", "signdate"],
@@ -141,16 +142,28 @@ app.post('/signup', function(req, res){
                 console.log("Successfully added a new user");
                 res.cookie("sid", hashing);
                 res.cookie("username", req.body.username);
+                
+                //
                 res.mailer.send("emailconf", {
                     to:req.body.email,
                     subject: "Please confirm your email",
                     username:req.body.username,
-                    confirm_link: "http://www.google.com"
+                    confirm_link: 'http://localhost:3000/email_confirmation?eid=' + hashing
                 }, function (err) {
                     if(err){
-                        console.log("There was an erro sending the email");
+                        console.log("There was an error sending the email");
                         return;
                     } else {
+                        var stm = {
+                            tbname: "email_confirmation",
+                            params:["eid", "uid", "confirmed"],
+                            values:[hashing, uid, 0]
+                        }
+                        connection.query(insertInto(stm), function(err, result){
+                           if(err){
+                               console.log("confirmation error: cannot insert confirmation detail into database");
+                           } 
+                        });
                         console.log("Confirmation email sent");
                     }
                 });
@@ -246,12 +259,26 @@ app.post('/veripassword', function(req, res){
     var upperCase = new RegExp('[A-Z]');
     var lowerCase = new RegExp('[a-z]');
     var numbers = new RegExp('[0-9]');
+    var instruction = ["Between 6 to 20 characters", "Contains 1 upper case letter", "Contains 1 lower case letter", "Contains 1 numeric character"];
     var pass = req.body.password;
-    if(pass.match(upperCase) && pass.match(lowerCase) && pass.match(numbers)) {
-        res.send({verify:1, statusText:"You've got a strong password!"});
-    } else {
-        res.send({verify:0, statusText:"Password must be between 6 to 20 characters with at least 1 lowercase, 1 uppercase and 1 number character"});
+    var isLength = ((pass.length >= 6 && pass.length <= 20)? true : false);
+    var instruction_pass = [isLength, upperCase.test(pass), lowerCase.test(pass), numbers.test(pass)];
+    var passAll = 1;
+    
+    //Construct instructions for password
+    var param = "<ul>";
+    for (var i = 0; i < instruction.length; i++) {
+        if (instruction_pass[i]){
+            param += "<strike><li>" + instruction[i]  + "</li></strike>";
+        } else {
+            passAll = 0;
+            param += "<li>" + instruction[i] + "</li>";
+        }
     }
+    if (passAll) {
+       param = "You've got a strong password"; 
+    }
+    res.send({verify:passAll, statusText:param});
 });
 
 
@@ -272,12 +299,37 @@ function verifyEmail(email)
 
 /* Email confirmation when user first sign up */
 app.get('/email_confirmation', function(req, res) {
-    res.send(req.query.eid); 
+    var hashValue = req.query.eid;
+    console.log(hashValue);
+    //Check if the confirmation hash is verified
+    connection.query('select confirmed from email_confirmation where eid="' + hashValue + '"',              function(err, result) {
+            //Confirm the hash value
+            if(result[0]['confirmed'] == 0) {
+                connection.query('update email_confirmation set confirmed=1 where eid="' + hashValue                                + '"', function(err, result){
+                    if (is_null(error)){
+                        res.send("Email confirmed!");   
+                    }
+                });
+            } else if(result[0]['confirmed'] == 1){
+                res.send("Your email hash already been confirmed!");
+                //hash value has been previously confirmed
+            } else {
+                
+                res.send("Your confirmation email is not quite right....?");
+                //There is no such eid          
+            }      
+            console.log("result:" + JSON.stringify(result));
+    }); 
 });
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+
+function is_null(status)
+{
+    return (status == "null" || status == null);
+}
 
 /*  tbname:string
     params:array of strings
