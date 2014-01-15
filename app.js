@@ -17,6 +17,11 @@ var mailer = require('express-mailer');
 var query_result = null;
 var app = express();
 
+/* Constant values */
+var password_verification_text = ["Between 6 to 20 characters", "Contains 1 upper case letter", "Contains 1 lower case letter", "Contains 1 numeric character"];
+var upperCase = new RegExp('[A-Z]');
+var lowerCase = new RegExp('[a-z]');
+var numbers = new RegExp('[0-9]');
 
 //Set up database
 var connection = mysql.createConnection({
@@ -78,6 +83,7 @@ if ('development' == app.get('env')) {
 /*  Search page */
 app.get('/search', function(req,res) {
     //if user already login
+    console.log("session id:" + req.session.id);
     if(req.session.sid) {
         res.render('search', {signedin:true, username:req.session.username});
     } else {
@@ -89,6 +95,36 @@ app.get('/search', function(req,res) {
 /* Index page */
 app.get('/', function (req, res) {
     res.render('index', { result:query_result });
+});
+http.createServer(app).listen(app.get('port'), function(){
+  console.log('Express server listening on port ' + app.get('port'));
+});
+
+
+
+/* Email confirmation when user first sign up */
+app.get('/email_confirmation', function(req, res) {
+    var hashValue = req.query.eid;
+    console.log(hashValue);
+    //Check if the confirmation hash is verified
+    connection.query('select confirmed from email_confirmation where eid="' + hashValue + '"',              function(err, result) {
+            //Confirm the hash value
+            if(result[0]['confirmed'] == 0) {
+                connection.query('update email_confirmation set confirmed=1 where eid="' + hashValue                                + '"', function(err, result){
+                    if (is_null(err)){
+                        res.send("Email confirmed!");   
+                    }
+                });
+            } else if(result[0]['confirmed'] == 1){
+                res.send("Your email hash already been confirmed!");
+                //hash value has been previously confirmed
+            } else {
+                
+                res.send("Your confirmation email is not quite right....?");
+                //There is no such eid          
+            }      
+            console.log("result:" + JSON.stringify(result));
+    }); 
 });
 
 
@@ -106,14 +142,11 @@ app.post('/createpost', function(req, res) {
 app.post('/login', function(req, res) {
     var user = req.body.username;
     var pass = req.body.password;
-    var response = res;
+    var response = res.
     connection.query('select password from users where username="' + user + '"', function(err, result){
         if(result[0]['password'] == pass) {
             
             var hashing = crypto.createHash('md5').update(user).digest('hex');
-//            connection.query('insert into user_session(sid, uid) values (' + hashing + ')', function(err, result) {
-//                
-//            });
             req.session.sid = hashing;
             req.session.username = req.body.username;
             res.cookie("sid", hashing).send();
@@ -124,68 +157,186 @@ app.post('/login', function(req, res) {
 });
 
 
-/* When user has successfully filled out the information */
+
+
+/*  
+    A process that verifies user's sign up form, and redirect to the appropriate page
+*/
 app.post('/signup', function(req, res){
     var uid = createUID();
-    var myParam = [uid, req.body.username, req.body.password, req.body.email, getDate()];
-    var sql_stm = {
-        tbname: "users",
-        params:["uid", "username", "password", "email", "signdate"],
-        values:myParam
-    }
-    connection.query(insertInto(sql_stm),  
-        function(err, result){
-            var hashing = crypto.createHash('md5').update(req.body.username).digest('hex');
-            if(err == "null" || err == null) {
-                req.session.sid = hashing;
-                req.session.username = req.body.username;
-                console.log("Successfully added a new user");
-                res.cookie("sid", hashing);
-                res.cookie("username", req.body.username);
-                
-                //
-                res.mailer.send("emailconf", {
-                    to:req.body.email,
-                    subject: "Please confirm your email",
-                    username:req.body.username,
-                    confirm_link: 'http://localhost:3000/email_confirmation?eid=' + hashing
-                }, function (err) {
-                    if(err){
-                        console.log("There was an error sending the email");
-                        return;
-                    } else {
-                        var stm = {
-                            tbname: "email_confirmation",
-                            params:["eid", "uid", "confirmed"],
-                            values:[hashing, uid, 0]
-                        }
-                        connection.query(insertInto(stm), function(err, result){
-                           if(err){
-                               console.log("confirmation error: cannot insert confirmation detail into database");
-                           } 
-                        });
-                        console.log("Confirmation email sent");
-                    }
-                });
-                
-                res.render("search", {signedin:true, username:req.session.username});
-            } else {
-                console.log("Sign up error:" + err);
-                res.render("signupform");
+    var isVerified = false;
+    verifySubmittedForm(req.body.username, req.body.email, req.body.password, function(isValid) {
+        //if all the fields are correct
+        if(isValid) {
+            
+            var sql_param = [createUID(), req.body.username, req.body.password, req.body.email, getDate()];
+            //Preparing for sql query
+            var sql_stm = {
+                tbname: "users",
+                params:["uid", "username", "password", "email", "signdate"],
+                values:sql_param
             }
-        
+            //Add user to the database, send them an email confirmation link
+            connection.query(insertInto(sql_stm),  
+            function(err, result){
+                var hashing = crypto.createHash('md5').update(req.body.username).digest('hex');
+                if(err == "null" || err == null) {
+                    req.session.sid = hashing;
+                    req.session.username = req.body.username;
+                    console.log("Successfully added a new user");
+                    res.cookie("sid", hashing);
+                    res.cookie("username", req.body.username);
+                    
+                    res.mailer.send("emailconf", {
+                        to:req.body.email,
+                        subject: "Please confirm your email",
+                        username:req.body.username,
+                        confirm_link: 'http://localhost:3000/email_confirmation?eid=' + hashing
+                    }, function (err) {
+                        if(err){
+                            console.log("There was an error sending the email");
+                            return;
+                        } else {
+                            var stm = {
+                                tbname: "email_confirmation",
+                                params:["eid", "uid", "confirmed"],
+                                values:[hashing, uid, 0]
+                            }
+                            connection.query(insertInto(stm), function(err, result){
+                               if(err){
+                                   console.log("confirmation error: cannot insert confirmation detail into database");
+                               } 
+                            });
+                            console.log("Confirmation email sent");
+                        }
+                    });
+                    
+                    res.render("search", {signedin:true, username:req.session.username});
+                } else {
+                    console.log("Sign up error:" + err);
+                }
+            });
+                
+        } else {
+            res.render("signupform", {needfix:true, username:req.body.username,                                             email:req.body.email, error_message:"Either username, password or email is not valid, please check again!"});
+        }
     });
 });
 
-function sqlParam(param)
-{
-    var values = "";
-    for(var i = 0; i < param.length; i++) {
-        values += '"' + param[i] + '", ';
-    }
-    return values.substring(0, values.lastIndexOf(","));
+
+
+/* Renders a sign up from template */
+app.get('/signupform', function(req, res) {
+    res.render("signupform");
+});
     
+
+/* Renders a profile page from template */
+app.get('/profile', function(req, res){
+    res.render("profile");
+});
+
+/* A process that verifies user input and return appropriate response */
+app.post('/verify', function(req, res){
+    var value = req.body.value;
+    var data;
+    console.log(req.body.type);
+    switch(req.body.type)
+    {
+            case 'text':
+                verifyUser(value, function(isData, message){
+                    res.send({verify:isData, statusText:message});
+                });
+                break;
+            case 'email':
+                verifyEmail(value, function(isEmail, message){
+                    res.send({verify:isEmail, statusText:message}); 
+                });
+                break;
+            case 'password':
+                data = verifyPassword(value)[0];
+                res.send({verify:data.pass, statusText:data.log});
+                break;
+            default:
+                break;
+    }
+});
+
+
+/* A function that verify user password */
+function verifyPassword(pass)
+{
+    var isValidPassword = 1;
+    
+    //Check if password length is in the right range
+    var isLength = ((pass.length >= 6 && pass.length <= 20)? true : false);
+    
+    //An array that holds boolean value that indicate each form's  passing status
+    var instruction_pass = [isLength, upperCase.test(pass), lowerCase.test(pass), numbers.test(pass)];
+    
+    //Construct instructions for password
+    var param = "<ul>";
+    for (var i = 0; i < instruction_pass.length; i++) {
+        if (instruction_pass[i]){
+            param += "<strike><li>" + password_verification_text[i]  + "</li></strike>";
+        } else {
+            isValidPassword = 0;
+            param += "<li>" + password_verification_text[i] + "</li>";
+        }
+    }
+    if (isValidPassword) {
+       param = "You've got a strong password"; 
+    }
+    return [{pass:isValidPassword, log:param}];
 }
+
+
+/* A function that verify if user already exists in database */
+function verifyUser(username, callback)
+{
+    var isUser = 1;
+    var param =  "";
+    if (username.length < 4 || username.length > 10) {
+        isUser = 0;
+        param = "Username should be between 4 to 10 characters long"
+        callback(isUser, param);
+    } 
+    connection.query('select * from users where username="' + username + '"',                                   function(err, result){
+            if (result && result.length == 0) {
+                callback(isUser, username + " is available");
+            } else {
+                isUser = 0;
+                callback(isUser, username + " has been taken");
+            }
+    });
+}
+
+
+// A function that verifies email based on the existence of a dot and @ symbol
+function verifyEmail(email, callback) 
+{
+    var atpos = email.indexOf("@");
+    var dotpos = email.lastIndexOf(".");
+    var isEmail = 1;
+    var param = " is a valid email";
+    if(atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= email.length)
+    {
+        isEmail = 0;
+        param = " is not a valid email";
+    } 
+    callback(isEmail, param);
+}
+
+//
+//function sqlParam(param)
+//{
+//    var values = "";
+//    for(var i = 0; i < param.length; i++) {
+//        values += '"' + param[i] + '", ';
+//    }
+//    return values.substring(0, values.lastIndexOf(","));
+//    
+//}
 
 function getDate()
 {
@@ -203,129 +354,7 @@ function createUID()
     return parseInt(uid);
 }
 
-/* When user request a sign up form */
-app.get('/signupform', function(req, res) {
-    res.render("signupform");
-    console.log('filing up form');
-});
-    
-//A post request that checks if user name exists in database
-app.post('/veriuser', function(req, res) {
-    console.log("verifying username " + req.body.username);
-    
-    if(req.body.username.length < 4) {
-        res.send({verify:0, statusText:"Username should be at least 4 characters"});
-    } else if(req.body.username.length > 9) {
-        res.send({verify:0, statusText:"Username cannot be more than 9 characters"});
-    } else {
-        connection.query('select * from users where username="' + req.body.username + '"', function(err, result){
-            if (result && result.length == 0) {
-                res.send({verify:1, statusText:req.body.username + " is available"}); 
-            } else {
-                res.send({verify:0, statusText:req.body.username + " has been taken"});
-            }
-        });
-    }
-//    res.send("seomthing");
-});
-
-
-/* Profile Page */
-app.get('/profile', function(req, res){
-        
-    res.render("profile");
-});
-    
-//A post request that checkes if email is already in database
-app.post('/veriemail', function(req, res){
-    console.log("verifying email " + req.body.email);
-    connection.query('select * from users where email="' + req.body.email + '"', function(err, result){
-        if (result && result.length == 0 && verifyEmail(req.body.email)) {
-            res.send({verify:"valid", statusText:req.body.email + " is good"}); 
-            console.log(req.body.username + " is available");
-        } else {
-            if(!verifyEmail(req.body.email)) {
-                res.send({verify:1, statusText:req.body.email + " is not a valid email address"});
-            } else {
-                res.send({verify:0, statusText:req.body.email + " is already in the system"});
-            }
-//            console.log(req.body.username + " is taken");
-        }
-    });
-
-});
-
-app.post('/veripassword', function(req, res){
-    var upperCase = new RegExp('[A-Z]');
-    var lowerCase = new RegExp('[a-z]');
-    var numbers = new RegExp('[0-9]');
-    var instruction = ["Between 6 to 20 characters", "Contains 1 upper case letter", "Contains 1 lower case letter", "Contains 1 numeric character"];
-    var pass = req.body.password;
-    var isLength = ((pass.length >= 6 && pass.length <= 20)? true : false);
-    var instruction_pass = [isLength, upperCase.test(pass), lowerCase.test(pass), numbers.test(pass)];
-    var passAll = 1;
-    
-    //Construct instructions for password
-    var param = "<ul>";
-    for (var i = 0; i < instruction.length; i++) {
-        if (instruction_pass[i]){
-            param += "<strike><li>" + instruction[i]  + "</li></strike>";
-        } else {
-            passAll = 0;
-            param += "<li>" + instruction[i] + "</li>";
-        }
-    }
-    if (passAll) {
-       param = "You've got a strong password"; 
-    }
-    res.send({verify:passAll, statusText:param});
-});
-
-
-
-// A function that verifies email based on the existence of a dot and @ symbol
-function verifyEmail(email) 
-{
-    var atpos = email.indexOf("@");
-    var dotpos = email.lastIndexOf(".");
-    if(atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= email.length)
-    {
-        return false;
-    } else {
-        return true;
-    }
-}
-
-
-/* Email confirmation when user first sign up */
-app.get('/email_confirmation', function(req, res) {
-    var hashValue = req.query.eid;
-    console.log(hashValue);
-    //Check if the confirmation hash is verified
-    connection.query('select confirmed from email_confirmation where eid="' + hashValue + '"',              function(err, result) {
-            //Confirm the hash value
-            if(result[0]['confirmed'] == 0) {
-                connection.query('update email_confirmation set confirmed=1 where eid="' + hashValue                                + '"', function(err, result){
-                    if (is_null(error)){
-                        res.send("Email confirmed!");   
-                    }
-                });
-            } else if(result[0]['confirmed'] == 1){
-                res.send("Your email hash already been confirmed!");
-                //hash value has been previously confirmed
-            } else {
-                
-                res.send("Your confirmation email is not quite right....?");
-                //There is no such eid          
-            }      
-            console.log("result:" + JSON.stringify(result));
-    }); 
-});
-
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
-});
-
+//Check if the input is null
 function is_null(status)
 {
     return (status == "null" || status == null);
@@ -349,5 +378,27 @@ function insertInto(myJSON)
     }
     mysql_stm = mysql_stm.substring(0, mysql_stm.length - 1) + ")";
     return mysql_stm;
+}
+
+/* Finaly form verification for user's sign up page */
+function verifySubmittedForm(username, email, password, callback) {
+    verifyUser(username, function(isUser, user_status_message){
+        if(isUser) {
+            verifyEmail(email, function(isEmail, email_status_message){
+                if(isEmail){
+                    if(verifyPassword(password)[0].pass) {
+                        callback(true);
+                    } else {
+                        callback(false);
+                    }
+                } else {
+                    callback(false);
+                }
+            });
+        }
+        else {
+            callback(false);
+        }
+    });
 }
 

@@ -2,13 +2,15 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title> {% block title %}My Site{% endblock %}</title>
-
-  {% block head %}
-  {% endblock %}
+  <title> {% block html-title %}My Site{% endblock html-title %}</title>
+    {% include 'javascripts.html' %}
+    {% include 'stylesheets.html' %}
+    {% block head %}
+    {% endblock head %}
 </head>
 <body>
-
-  {% block content %} {% endblock %}
+    {% block navbar %}{% endblock navbar %}
+    {% block content %}{% endblock content %}
+    {% block html-footer %}{% endblock html-footer %}
 </body>
 </html>

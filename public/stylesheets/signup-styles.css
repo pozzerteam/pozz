@@ -96,3 +96,11 @@ body {
 .input-instruction {
     font-size:12px;
 }
+
+.valid{
+    background: url('../images/valid.png') no-repeat;
+}
+
+.invalid{
+    background: url('../images/invalid.png') no-repeat;
+}
