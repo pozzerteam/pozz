@@ -22,6 +22,7 @@ var password_verification_text = ["Between 6 to 20 characters", "Contains 1 uppe
 var upperCase = new RegExp('[A-Z]');
 var lowerCase = new RegExp('[a-z]');
 var numbers = new RegExp('[0-9]');
+var domain = "http://pozz.me";
 
 //Set up database
 var connection = mysql.createConnection({
@@ -94,7 +95,8 @@ app.get('/search', function(req,res) {
 
 /* Index page */
 app.get('/', function (req, res) {
-    res.render('index', { result:query_result });
+    res.render('index', {domainname:domain});
+    
 });
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

@@ -1,6 +1,6 @@
 {
   "name": "application-name",
-  "version": "0.0.1",
+  "version": "0.0.1-2",
   "private": true,
   "scripts": {
     "start": "node app.js"
@@ -10,6 +10,12 @@
     "monk": "*",
     "express": "3.4.7",
     "jade": "*",
-    "swig": "~1.2.2"
+    "swig": "~1.2.2",
+    "mysql": "*",
+    "express-mailer": "*"
+  },
+  "subdomain": "pozz",
+  "engines": {
+    "node": "0.10.x"
   }
 }
