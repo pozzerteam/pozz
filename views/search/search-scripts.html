@@ -1,0 +1,156 @@
+    <script src="javascripts/jquery.js"></script>
+    <script src="javascripts/jquery.ui.effect.js"></script>
+    <script language="javascript" type="text/javascript" src="javascripts/bootstrap.js">
+    </script>
+    <script src="javascripts/transition.js"></script>
+    <script src="javascripts/modal.js"></script>
+    <script src="javascripts/utility.js"></script>
+    <script src="javascripts/expandable.js"></script>
+    <script src="javascripts/processing.js"></script>
+    <script src="javascripts/tooltip.js"></script>
+    <script src="javascripts/load-image.min.js"></script>
+    <script src="javascripts/canvas-to-blob.min.js"></script>
+    <script src="javascripts/jquery.fileupload-process.js"></script>
+<!--
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-RWs2BNTpLsQSlkgysaVkDKeJDhQhufw&sensor=false">
+    </script>
+-->
+<!--    <script type="text/javascript" src="javascripts/map.js"></script>-->
+    <link rel="stylesheet" href="stylesheets/bootstrap-theme.css">
+    <link rel="stylesheet" href="stylesheets/bootstrap.css">
+
+    <link rel="stylesheet" href="stylesheets/pozz-product.css">
+    <link rel="stylesheet" href="stylesheets/search.css">
+    <link rel="stylesheet" href="stylesheets/preview-product.css">
+    <link rel="stylesheet" href="stylesheets/jquery.fileupload.css">
+
+    <script>
+        $(document).ready(function() {
+            var post_title_id = "post-title";
+            var post_price_id = "post-price";
+            var post_description_id = "post-description";
+            var post_location_id = "post-location";
+            var post_days_id = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+            var isClicked = false;
+            var btnSignIn = $('#sign-btn');
+            
+            //Selectors for full view
+            var fv_title = $('#fv_title');
+            var fv_price = $('#fv_price');
+            var fv_times = $('#fv_times');
+            var fv_description = $('#fv_description');
+            
+            
+            /*
+                Display a tooltip for the sign in button on nav bar
+            */
+            btnSignIn.tooltip({
+                'trigger':'click',
+                'placement': 'bottom',
+                'title': $('#signinform').html(),
+                'html': true,
+            });
+            
+//            $('#successsignin').hide();
+            
+            //Sign in button, located on nav bar
+            btnSignIn.on('shown.bs.tooltip', function(){
+                $('#signinbutton').click(function(){
+                    var user_auth = {};
+                    user_auth.username = $('#username').val();
+                    user_auth.password = $('#password').val();
+                    $.ajax({
+                        type:"POST",
+                        data:JSON.stringify(user_auth),
+                        contentType:"application/json",
+                        url: "http://localhost:3000/login",
+                        async:true,
+                        success: function(data) {
+                            btnSignIn.tooltip("hide");
+                            btnSignIn.hide();
+                            $('#successsignin').show();
+                            $('#signinname').html("pozzerteam");
+                        },
+                        error: function(data){
+                            console.log(data);
+                            console.log("failed");
+                        }
+                    });
+                });    
+            });
+            
+            
+            
+            /* Verify forms */
+            $('#post-submit').click(function(){
+                var myTitle = $('#' + post_title_id).val();
+                var myPrice = $('#' + post_price_id).val();
+                var myDescription = $('#' + post_description_id).val();
+                var myLocation = $('#' + post_location_id).val();
+                var myDays = "";
+                for(var i = 0; i < post_days_id.length; i++) {
+                    if($('#post-' + post_days_id[i]).is(":checked")) {
+                        myDays += post_days_id[i] + ",";
+                    }
+                }
+                
+                var data = {};
+                data.id = CryptoJS.SHA1(myTitle).toString(CryptoJS.enc.Hex);
+                data.title = myTitle;
+                data.price = myPrice;
+                data.description = myDescription;
+                data.days = myDays;
+                $.ajax({
+                    type:"POST",
+                    data:JSON.stringify(data),
+                    contentType:"application/json",
+                    url:"http://localhost:3000/createpost",
+                    success: function(data) {
+                        console.log("successfully submitted the post");
+                    }
+                });
+                
+            });
+            
+            $('.post-container').hide();
+            
+            $('#post-button').click(function() {
+                if(isClicked) {
+                    isClicked = false;
+                    $('.post-container').hide(); 
+                } else {
+                    isClicked = true;
+                    $('.post-container').show(); 
+                }
+            });
+            
+           $('.product-image-main').click(function() {
+               //Extract id
+               var id = $(this).attr("id").replace("image-", "");
+               
+               //Show product modal
+               $('#productModal').modal('show');
+               
+               //Get image src
+               var imagesrc = $(this).attr("src");
+               
+               //Things to do after modal is shown
+               $('#productModal').on('shown.bs.modal', function(e) {
+                   $('#modal-product-mainimage').attr("src", imagesrc);
+                   var fullview_title = $('#title-' + id).html();
+                   var fullview_price = $('#price-' + id).html();
+                   var fullview_availabletimes = $('#available_times-' + id).html();
+                   var fullview_description = $('#text-' + id).html();
+                   fv_title.html(fullview_title);
+                   fv_price.html(fullview_price);
+                   fv_times.html(fullview_availabletimes);
+                   fv_description.html(fullview_description);
+               });
+               
+           }); 
+            $('.modal-product-subimage').hover(function() {
+                $('#modal-product-mainimage').attr("src", $(this).attr("src"));
+            })
+        });
+        /** JQuery functions **/
+    </script>

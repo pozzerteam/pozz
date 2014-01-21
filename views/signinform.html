@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Pozz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="stylesheets/bootstrap.css" rel="stylesheet">
+    <link href="stylesheets/signup-styles.css" rel="stylesheet" media="screen">
+    <script src="javascripts/jquery.js"></script>
+    <script src="javascripts/tooltip.js"></script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+
+    <!--Navbar -->
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <a class="main-logo pull-left" href="#">Pozz</a>
+            <a class="navbar-text pull-right" href="signupform">Sign Up</a>
+        </div>
+    </div>
+    <!-- End navbar -->
+
+    <!-- Sign In form -->
+    <script>
+        
+        
+        $(document).ready(function(){
+            
+            $('.validation').hide();
+            
+            //Test function
+            $('#signinbutton').click(function()              {
+                
+                var myInput = $(this);
+                var valid_img = myInput.prev().prev();
+                var invalid_img = myInput.prev().prev().prev();
+                $.ajax({
+                    type: "POST",
+                    url:"{{domainname}}/signin",
+                    async:false,
+                    data:"username=" + $('#signinuser').val() + "&password=" + $('#signinpassword').val(),
+                    complete:function(data){
+                        alert(data.responseJSON.message);
+                    }    
+                });
+                
+            })         
+        });
+    </script>
+
+    <div class="container">
+        <form class="form-signin" role="form" action="signin" method="post" onsubmit="">
+            <h2 class="form-signin-heading">Please sign in</h2>
+            {% if needfix %}<div class="alert alert-danger">{{message}}</div>{% endif %}
+            <!---- USERNAME ------>
+            <img src="images/invalid.png" class="validation">
+            <img src="images/valid.png" class="validation">
+            <font class="validation-status"></font>
+            <input type="text" class="form-control" placeholder="Username" id="signinuser" name="username" {% if needfix %} value="{{username}}" {% endif %} required autofocus>
+            <br>
+            <br>
+            <!---- PASSWORD ------>
+            <img src="images/invalid.png" class="validation">
+            <img src="images/valid.png" class="validation">
+            <font class="validation-status"></font>
+            <input type="password" class="form-control" placeholder="Password" id="signinpassword" name="password" required>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" id="signinbutton">Sign In</button>
+        </form>
+
+    </div>
+    <!-- /container -->
+
+
+    <!-- Sign Up form -->
+
+
+
+    <!-- Footer -->
+    <hr>
+    <footer class="main-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <p>
+                        Our mission is to create the best maraket place on earth.
+                    </p>
+                    <p class="copyright">&copy; 2013 Pozz, Inc.</p>
+                </div>
+                <div class="col-sm-2 col-sm-offset-1 col-md-offset-2">
+                    <ul class="link-list">
+                        <li class="heading">
+                            <a href="#">About Pozz</a>
+                        </li>
+                        <li>
+                            <a href="#">Team</a>
+                        </li>
+                        <li>
+                            <a href="#">Pozz Blog</a>
+                        </li>
+                        <li>
+                            <a href="#">Pozz Shop</a>
+                        </li>
+                        <li>
+                            <a href="#">Privacy Policy</a>
+                        </li>
+                        <li>
+                            <a href="#">Terms &amp; Conditions</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-2">
+                    <ul class="link-list">
+                        <li class="heading">
+                            <a href="#">Introduction &rarr;</a>
+                        </li>
+                        <li>
+                            <a href="#">Selling on Pozz</a>
+                        </li>
+                        <li>
+                            <a href="#">Buying on Pozz</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-2">
+                    <ul class="link-list">
+                        <li class="heading">
+                            <a href="#">Get in touch &rarr;</a>
+                        </li>
+                        <li>
+                            <a href="pozzteam@pozz.com">pozzteam@pozz.com</a>
+                        </li>
+                        <li>1(360)6103008</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- End footer -->
+    </div>
+    <!-- End Main Content -->
+
+
+</body>
+
+</html>

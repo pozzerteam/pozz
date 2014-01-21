@@ -230,3 +230,54 @@ h2 {
 .map-footer {
     padding-top:30px;
 }
+
+.test-background {
+    background-image:url("../images/background5.jpeg");
+    background-repeat:no-repeat;
+    width:100%;
+
+}
+
+.sideleft-input {
+    float:left;
+    width:300px;
+    padding-right:10px;
+    background-color:yellow;
+}
+
+.sideright-input {
+    float:left;
+    width:50%;
+}
+
+.main-content {
+    width:100%;
+    height:100px;
+}
+
+.bottom-nav {
+    width:100%;
+    height:200px;
+}
+
+.post-box {
+    width:700px;
+    left:100px;
+    top:100px;
+    position:relative;
+}
+
+.input1 {
+    width:50%;
+    height:190px;
+    float:left;
+    padding-right:30px;
+}
+
+.post-body {
+    height:200px;
+}
+
+.day {
+    width:50px;
+}
