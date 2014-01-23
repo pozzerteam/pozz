@@ -264,7 +264,7 @@ h2 {
     width:700px;
     left:100px;
     top:100px;
-    position:relative;
+    position:fixed;
 }
 
 .input1 {

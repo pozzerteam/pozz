@@ -19,6 +19,8 @@ var validator = require('validator');
 var fs = require('fs');
 var upload = require('jquery-file-upload-middleware');
 
+//swig.setDefaults({ loader: swig.loaders.fs(__dirname + "/views/templates/")});
+
 upload.configure({
     uploadDir: __dirname + '/public/img',
     uploadUrl: '/img',
@@ -31,7 +33,6 @@ upload.configure({
 });
 
 app.use('upload', upload.fileHandler());
-app.use(express.bodyParser());
 
 /* Constant values */
 var password_verification_text = ["Between 6 to 20 characters", "Contains 1 upper case letter", "Contains 1 lower case letter", "Contains 1 numeric character"];
@@ -92,7 +93,6 @@ app.use(express.session({
 }));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.bodyParser());
 app.use(express.cookieParser());
 app.use(express.session({}));
 app.use(express.bodyParser({
@@ -107,17 +107,22 @@ if ('development' == app.get('env')) {
 
 /*  Search page */
 app.get('/search', function (req, res) {
-    //if user already login
-    //    console.log("session id:" + req.session.id);
+    var postbox = swig.compileFile(__dirname + "/views/search/search-post-box.html");
+//    var postboxjs = swig.compileFile(__dirname + "/views/fileupload.html");
+
+//    console.log(post);
     if (req.session.sid) {
         res.render('search/search', {
             signedin: true,
-            username: req.session.username
+            username: req.session.username,
+            post_box: postbox
         });
+        
     } else {
         res.render('search/search', {
             signedin: false,
-            username: ""
+            username: "",
+            post_box: postbox
         });
     }
     //if first time visitor
@@ -266,14 +271,25 @@ app.post('/uploadimg', function (req, res) {
 /* Check for potential sql injection */
 /* params: title, price, days, location, images  */
 app.post('/createpost', function (req, res) {
+    
     var id = req.body.id;
     var title = connection.escape(req.body.title);
     var price = connection.escape(req.body.price);
     var description = connection.escape(req.body.description);
     var days = connection.escape(req.body.days);
     var location = connection.escape(req.body.location);
+    
 
 });
+
+
+//Create PID takes in two integer and create a string 
+//concatenating two and returns the string representation
+function createPID(int uid)
+{
+    var random = Math.random() * 1000;
+    console.log("pid: " + random.toString() + uid.toString());
+}
 
 app.post('/login', function (req, res) {
     var user = req.body.username;
